@@ -1,6 +1,9 @@
 package santoni.packag.com.santoni;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -22,6 +25,7 @@ public class LoginActivity extends AppCompatActivity {
 
     Button btn_login,btn_login_register;
     EditText et_username,et_password;
+    boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +41,10 @@ public class LoginActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 login();
+
+
             }
         });
 
@@ -61,6 +68,8 @@ public class LoginActivity extends AppCompatActivity {
 //                                "this is response : " + response, Toast.LENGTH_SHORT).show();
 
                         if (response.contains("1")) {
+
+                            SharedPrefs.saveSharedSetting(LoginActivity.this, "CaptainCode", "false");
                             startActivity(new Intent(getApplicationContext(),ProductActivity.class));
                             finish();
                         } else {
@@ -88,4 +97,38 @@ public class LoginActivity extends AppCompatActivity {
 
         Volley.newRequestQueue(this).add(request);
     }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
+    }
+
+    //Save the users login info
+
+    public void saveInfo(){
+        SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("username", et_username.getText().toString());
+        editor.putString("password", et_password.getText().toString());
+        editor.apply();
+
+        Toast.makeText(this,"Saved!", Toast.LENGTH_LONG).show();
+    }
+
+
 }

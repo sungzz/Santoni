@@ -1,9 +1,15 @@
 package santoni.packag.com.santoni;
 
+import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -23,6 +29,8 @@ public class ProductActivity extends AppCompatActivity {
     //this is the JSON Data URL
     //make sure you are using the correct ip else it will not work
     private static final String URL_PRODUCTS = "http://192.168.5.102/loginapp/api.php";
+
+    boolean doubleBackToExitPressedOnce = false;
 
     //a list to store all the products
     List<Product> productList;
@@ -46,6 +54,7 @@ public class ProductActivity extends AppCompatActivity {
         //this method will fetch and parse json
         //to display it in recyclerview
         loadProducts();
+        CekSession();
     }
 
     private void loadProducts() {
@@ -99,5 +108,62 @@ public class ProductActivity extends AppCompatActivity {
 
         //adding our stringrequest to queue
         Volley.newRequestQueue(this).add(stringRequest);
+    }
+
+    public void CekSession(){
+
+        Boolean Check = Boolean.valueOf(SharedPrefs.readSharedSetting(ProductActivity.this, "CaptainCode", "true"));
+
+        Intent introIntent = new Intent(ProductActivity.this, LoginActivity.class);
+        introIntent.putExtra("CaptainCode", Check);
+
+        //The Value if you click on Login Activity and Set the value is FALSE and whe false the activity will be visible
+        if (Check) {
+            startActivity(introIntent);
+            finish();
+        } //If no the Main Activity not Do Anything
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        /* Use the inflater's inflate method to inflate our menu layout to this menu */
+        inflater.inflate(R.menu.information, menu);
+        /* Return true so that the menu is displayed in the Toolbar */
+        return true;
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_logout) {
+            SharedPrefs.saveSharedSetting(ProductActivity.this, "CaptainCode", "true");
+            Intent startSettingsActivity = new Intent(this, LoginActivity.class);
+            startActivity(startSettingsActivity);
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
     }
 }
