@@ -3,6 +3,7 @@
     package="santoni.packag.com.santoni">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -20,9 +21,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".AppActivity" />
-        <activity android:name=".ProductActivity">
-        </activity>
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".ProductActivity"></activity>
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".UploadProductActivity"></activity>
     </application>
 
 </manifest>

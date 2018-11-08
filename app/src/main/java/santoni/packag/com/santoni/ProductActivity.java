@@ -145,6 +145,13 @@ public class ProductActivity extends AppCompatActivity {
             finish();
             return true;
         }
+
+        if (id == R.id.add_product) {
+
+            Intent startSettingsActivity = new Intent(this, UploadProductActivity.class);
+            startActivity(startSettingsActivity);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
